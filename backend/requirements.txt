@@ -1,0 +1,40 @@
+# Dependencias del backend, con la version fijada.
+#
+# Van con "==" y no sueltas para que un despliegue de hoy y uno de dentro de
+# seis meses instalen exactamente lo mismo. Sin esto, un `pip install -r` en el
+# server puede traer una version distinta a la que se probo en la maquina de
+# uno, y el error aparece en produccion sin que nadie haya tocado el codigo.
+# Ademas, sabiendo la version exacta se puede saber si alguna tiene un problema
+# de seguridad conocido; con la lista suelta no hay contra que comparar.
+#
+# Solo estan las que el codigo importa de verdad. Las que estas arrastran
+# (starlette, pydantic, anyio y demas) las resuelve pip: fijarlas todas hace el
+# archivo ilegible, y ninguna se usa directo desde el proyecto.
+#
+# Para actualizar algo:
+#   .venv\Scripts\python.exe -m pip install --upgrade fastapi
+#   .venv\Scripts\python.exe -m pip freeze     <- copiar aca la version nueva
+# y probar la app antes de subirlo.
+#
+# Para ver si alguna tiene vulnerabilidades conocidas:
+#   .venv\Scripts\python.exe -m pip install pip-audit
+#   .venv\Scripts\python.exe -m pip_audit
+# (pip-audit es una herramienta, no una dependencia de la app: no va en esta
+# lista, y conviene sacarla del venv despues de usarla.)
+
+fastapi==0.141.1
+uvicorn[standard]==0.52.0
+httpx==0.28.1
+python-dotenv==1.2.2
+
+# Reportes: PDF y Excel.
+reportlab==5.0.0
+openpyxl==3.1.5
+
+# Firma de la cookie de sesion (lo usa SessionMiddleware de starlette).
+itsdangerous==2.2.0
+
+# Login contra Active Directory. pycryptodome esta por el MD4 que NTLM necesita
+# y que OpenSSL 3 ya no trae: ver el comentario de arriba de ldap_auth.py.
+ldap3==2.9.1
+pycryptodome==3.23.0

@@ -1,0 +1,49 @@
+﻿# Credenciales — NUNCA subir
+.env
+.env.bak
+.env.local
+
+# Base de datos local (usuarios y permisos del dashboard).
+# Los -wal y -shm son los archivos de trabajo del modo WAL: aparecen al lado de
+# la base mientras la app corre y no van al repo.
+dashboard.db
+dashboard.db-wal
+dashboard.db-shm
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.venv/
+venv/
+*.egg-info/
+
+# Node
+node_modules/
+dist/
+dist-ssr/
+frontend/.vite/
+*.local
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+
+# OS
+Thumbs.db
+.DS_Store
+
+# IDEs
+.vscode/*
+!.vscode/extensions.json
+.idea/
+*.suo
+*.sw?
+
+# Script de inicio local
+Iniciar_dashboard.ps1
+
+# Claude Code
+.claude/

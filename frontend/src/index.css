@@ -1,0 +1,148 @@
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg:          #0a0a0a;
+  --surface:     #111111;
+  --surface2:    #1a1a1a;
+  --border:      #262626;
+  --primary:     #fafafa;
+  --primary-fg:  #0a0a0a;
+  --green:       #4ade80;
+  --yellow:      #fbbf24;
+  --red:         #e7000b;
+  --blue:        #3a81f6;
+  --blue-light:  #91c5ff;
+  --text:        #fafafa;
+  --text-muted:  #a1a1a1;
+  /* Tercer escalon de texto, para metadatos: autor, fecha, "3 de 40". Con solo
+     dos grises, todo lo que no era titulo terminaba en --text-muted y pesaba
+     igual. No baja mas que esto porque sobre --surface ya queda en 4.9:1 de
+     contraste, apenas arriba del minimo que exige AA. */
+  --text-dim:    #828282;
+  --destructive: #e7000b;
+
+  /* Rojo suave, para acentos y textos: el --red pleno sobre fondo oscuro
+     vibra y cansa cuando ocupa mas que un icono. */
+  --red-soft:    #f87171;
+
+  /* Estados de un ticket en GLPI. Estaban escritos a mano en cada pantalla,
+     el amarillo hasta en cinco archivos: cambiar uno obligaba a cazarlos por
+     todos lados, y bastaba que se escapara uno para que el mismo estado se
+     viera de dos colores distintos. */
+  --estado-nuevo:       #60a5fa;
+  --estado-proceso:     #a78bfa;
+  --estado-planificado: #22d3ee;
+  --estado-espera:      #fbbf24;
+  --estado-resuelto:    #4ade80;
+  --estado-cerrado:     #6b7280;
+
+  /* Esquinas casi rectas: la estetica es de panel tecnico, no de app redondeada.
+     No van en cero para que los bordes no queden filosos, pero apenas lo justo
+     para que se note que hay una caja. */
+  --radius-sm: 3px;   /* botones, inputs, badges */
+  --radius:    4px;   /* tarjetas y paneles */
+  font-family: 'JetBrains Mono', ui-monospace, monospace;
+  -webkit-font-smoothing: antialiased;
+}
+
+body { background: var(--bg); color: var(--text); min-height: 100vh; }
+
+/* Anillo de foco para quien navega con el teclado.
+ *
+ * Habia trece "outline: none" repartidos por las pantallas y ningun reemplazo:
+ * al moverse con Tab no se veia donde estaba parado uno, con lo cual la app era
+ * inusable sin mouse.
+ *
+ * :focus-visible solo se activa cuando el navegador entiende que el foco vino
+ * del teclado, asi que hacer clic con el mouse no dibuja nada y no ensucia.
+ *
+ * El !important es a proposito: tiene que ganarle a los "outline: none" locales,
+ * que estan dentro de reglas mas especificas. Es la excepcion, no la costumbre.
+ */
+:focus-visible {
+  outline: 2px solid var(--primary) !important;
+  outline-offset: 2px;
+  border-radius: 3px;
+}
+
+/* Card */
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  position: relative;
+  overflow: hidden;
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+.card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 24px rgba(255, 255, 255, 0.04);
+}
+.card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(circle at center, rgba(255,255,255,0.02) 1px, transparent 1px);
+  background-size: 4px 4px;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
+}
+.card:hover::before { opacity: 1; }
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 12px;
+  border: none;
+  border-radius: var(--radius-sm);
+  background: none;
+  color: var(--text-muted);
+  font-family: inherit;
+  font-size: var(--fs-sm);
+  font-weight: 500;
+  cursor: pointer;
+  transition: color 0.15s, transform 0.16s ease-out;
+}
+.btn:hover { color: var(--text); }
+
+/* Feedback al apretar.
+ *
+ * No habia ninguno: se hacia clic y el boton no acusaba recibo hasta que
+ * llegaba la respuesta del servidor. El 0.97 es a proposito casi imperceptible;
+ * lo que se nota no es el tamaño sino que la interfaz contesta en el acto.
+ *
+ * Va sobre "button" para que valga en toda la app. Ojo con esta regla: al
+ * botón que declara su propio "transition" hay que agregarle ademas
+ * "transform 0.16s ease-out" a esa lista, porque la shorthand local le gana a
+ * esta por especificidad y sin eso se achica pero vuelve de golpe. Los que hay
+ * hoy ya lo tienen.
+ *
+ * Quedan tres afuera a proposito: .sb-item y .sb-subitem, que son la navegacion
+ * y se tocan cien veces por dia (a esa frecuencia cualquier animacion estorba),
+ * y .ss-option, que es una fila de un desplegable y no un boton: escalarla
+ * corre el texto adentro de la caja.
+ */
+button { transition: transform 0.16s ease-out; }
+button:active:not(:disabled) { transform: scale(0.97); }
+
+/* Badge */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 8px;
+  border-radius: var(--radius-sm);
+  font-size: var(--fs-xs);
+  font-weight: 600;
+  /* Letras un poco separadas: en una etiqueta corta y en monoespaciada, es lo
+     que la termina de leer como etiqueta de panel y no como texto suelto. */
+  letter-spacing: 0.3px;
+  background: var(--surface2);
+  color: var(--text-muted);
+  border: 1px solid var(--border);
+}
+
+::-webkit-scrollbar { width: 5px; height: 5px; }
+::-webkit-scrollbar-track { background: var(--bg); }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }

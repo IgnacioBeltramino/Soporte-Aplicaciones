@@ -1,0 +1,206 @@
+.app { min-height: 100vh; display: flex; flex-direction: column; }
+
+/* El contenido arranca despues de la barra lateral fija (236px) */
+.main {
+  padding: 32px 32px 28px;
+  margin-left: 236px;
+  flex: 1;
+  max-width: 1440px;
+  width: calc(100% - 236px);
+  transition: margin-left 0.18s ease, width 0.18s ease;
+}
+
+/* Con la barra plegada el contenido se corre para ganar ese ancho. Es el mismo
+   valor que .sb-chica en Sidebar.jsx, y el mismo que ya usaba el modo angosto
+   de pantallas chicas. */
+.app-sb-chica .main {
+  margin-left: 62px;
+  width: calc(100% - 62px);
+}
+
+@media (max-width: 720px) {
+  .main { margin-left: 62px; width: calc(100% - 62px); padding: 20px 18px; }
+}
+
+/* Encabezado de pagina: el titulo a la izquierda y las acciones a la derecha.
+   Estaba copiado en diez pantallas, con tres margenes distintos: al cambiar de
+   seccion el titulo saltaba unos pixeles. Vive aca una sola vez.
+ *
+ * El titulo volvio a la izquierda. Estuvo centrado con position absolute un
+ * tiempo, y el problema no era como se veia sino que era lo unico en toda la
+ * app que no arrancaba pegado al margen: tablas, tarjetas, columnas y
+ * formularios se alinean a la izquierda, y una excepcion sin motivo se lee
+ * como error aunque uno no sepa senalar por que. De paso se va el breakpoint
+ * de 1100px, que existia solo para que el titulo centrado no chocara con los
+ * botones.
+ *
+ * La linea de abajo cierra el encabezado: sin ella el titulo flota sobre el
+ * contenido; con ella el encabezado es una zona.
+ */
+.page-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  /* 28 y no 22: con la linea abajo hace falta mas aire del que hacia falta sin
+     ella. Donde primero se nota es en Novedades, porque lo que sigue es texto
+     (el titulo de columna) y no una caja con borde: un texto suelto se lee
+     pegado a la linea mucho antes que un panel. */
+  margin-bottom: 28px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--border);
+  min-height: 34px;
+}
+.page-header-left { display: flex; align-items: center; gap: 12px; min-width: 0; }
+.page-header-right { display: flex; align-items: center; gap: 12px; flex-shrink: 0; }
+
+/* Las pantallas que abren con un parrafo debajo del titulo lo quieren pegado:
+   ahi el aire lo pone el parrafo. Es la unica variante que era a proposito. */
+.page-header.compacto { margin-bottom: 8px; }
+
+.refresh-time { font-size: var(--fs-xs); color: var(--text-dim); }
+
+/* Escala de tamaños. Habia dieciocho valores distintos, con cosas como 9.5px o
+   12.5px que no se distinguen del vecino y solo agregan ruido.
+ *
+ * Se ajusto al rediseño de Novedades. Dos cambios sobre la escala anterior:
+ * se va el 10px, que en monoespaciada ya no se lee, y el titulo de tarjeta
+ * pasa de 15 a 14px. El salto que importa no es el de arriba sino el de abajo:
+ * entre el titulo (14) y los metadatos (11) tiene que haber distancia
+ * suficiente para que el ojo sepa cual es cual sin leerlos. Antes iba de 13 a
+ * 12 a 11 y los tres pesaban parecido.
+ */
+:root {
+  --fs-xs: 11px;   /* metadatos, etiquetas en mayusculas, badges */
+  --fs-sm: 12px;   /* texto secundario, el mas usado */
+  --fs-base: 13px; /* texto normal, filas de tabla */
+  --fs-lg: 14px;   /* titulos de tarjeta */
+  --fs-xl: 18px;   /* subtitulos de seccion y de modal */
+  --fs-2xl: 21px;  /* cifras de panel medianas */
+  --fs-3xl: 30px;  /* titulo de pagina */
+  /* Cifras de panel: el numero grande de Historico y los de Reportes. Estaban
+     en 44 y 32px, dos tamaños distintos para el mismo rol. Quedan en 32: 44 es
+     el doble que el titulo de pagina, y un numero no manda mas que el nombre
+     de la pantalla en la que esta. */
+  --fs-display: 32px;
+}
+
+/* Los glifos que hacen de icono (las X de cerrar, las flechas, el ⋯ del
+   Kanban, el ⏻ de salir) quedan a proposito fuera de la escala: --fs-*
+   dimensiona tipografia, y meter un icono adentro solo consigue que quede del
+   tamaño que le convenga a las letras. */
+
+/* Sin tracking negativo: en una monoespaciada el ancho de cada letra ya es fijo
+   y apretarlas pelea con el diseño del tipo. Ademas la app iba para los dos
+   lados a la vez, el titulo juntando -0.4 y el badge separando +0.3. */
+/* El nombre de la pantalla, con la letra apagandose de arriba hacia abajo.
+ *
+ * El degrade le da peso sin agregar ningun elemento nuevo: no hay barras de
+ * color, ni subrayados, ni un antetitulo que ocupe otra linea. Es lo mismo que
+ * ya estaba, mas grande y con una sola cosa encima, que es lo que aguanta
+ * mirarse todos los dias.
+ *
+ * El color va antes y el degrade adentro de @supports a proposito: si el
+ * navegador no entiende background-clip, se queda con el color y se ve un
+ * titulo blanco comun. Puesto al reves, "color: transparent" igual se aplicaria
+ * y el titulo desapareceria de la pantalla.
+ */
+.page-title {
+  font-size: var(--fs-3xl);
+  font-weight: 800;
+  line-height: 1.05;
+  color: var(--text);
+  margin-bottom: 24px;
+}
+
+@supports (background-clip: text) or (-webkit-background-clip: text) {
+  .page-title {
+    background: linear-gradient(180deg, var(--text) 0%, var(--text-dim) 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+}
+
+/* El fondo y el borde salen del mismo --red que el texto. Estaban escritos a
+   mano en un rojo distinto (#e54d2e), de antes de que existieran las variables:
+   el cartel mezclaba dos rojos que no terminaban de ser el mismo color. */
+.error-banner {
+  background: color-mix(in srgb, var(--red) 10%, transparent);
+  border: 1px solid color-mix(in srgb, var(--red) 30%, transparent);
+  color: var(--red-soft);
+  padding: 10px 16px;
+  border-radius: var(--radius);
+  margin-bottom: 20px;
+  font-size: var(--fs-base);
+}
+
+.loading { color: var(--text-muted); font-size: var(--fs-base); padding: 40px 0; text-align: center; }
+
+/* Login */
+.login-wrap {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+}
+
+.login-card {
+  width: 100%;
+  max-width: 360px;
+  padding: 32px 28px;
+  display: flex;
+  flex-direction: column;
+}
+.login-card:hover { transform: none; }
+
+.login-title {
+  font-size: var(--fs-xl);
+  font-weight: 700;
+  margin-bottom: 4px;
+}
+
+.login-sub {
+  font-size: var(--fs-base);
+  color: var(--text-muted);
+  margin-bottom: 24px;
+}
+
+.login-label {
+  font-size: var(--fs-sm);
+  color: var(--text-muted);
+  margin-bottom: 6px;
+}
+
+.login-input {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  color: var(--text);
+  font-family: inherit;
+  font-size: var(--fs-lg);
+  padding: 9px 12px;
+  margin-bottom: 16px;
+  transition: border-color 0.15s;
+}
+/* El borde al enfocar pasaba de #262626 a #a1a1a1: un gris apenas mas claro que
+   el de reposo, que no llegaba a leerse como "estas escribiendo aca". */
+.login-input:focus { outline: none; border-color: var(--primary); }
+.login-input:disabled { opacity: 0.5; }
+
+.login-btn {
+  background: var(--primary);
+  color: var(--primary-fg);
+  border: none;
+  border-radius: var(--radius-sm);
+  font-family: inherit;
+  font-size: var(--fs-base);
+  font-weight: 600;
+  padding: 10px;
+  margin-top: 8px;
+  cursor: pointer;
+  transition: opacity 0.15s, transform 0.16s ease-out;
+}
+.login-btn:hover:not(:disabled) { opacity: 0.85; }
+.login-btn:disabled { opacity: 0.5; cursor: default; }
