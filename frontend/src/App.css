@@ -1,0 +1,22 @@
+.app { min-height: 100vh; display: flex; flex-direction: column; }
+.main { padding: 72px 32px 28px; flex: 1; max-width: 1440px; width: 100%; margin: 0 auto; }
+
+.page-title {
+  font-size: 21px;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 24px;
+  letter-spacing: -0.4px;
+}
+
+.error-banner {
+  background: rgba(229, 77, 46, 0.1);
+  border: 1px solid rgba(229, 77, 46, 0.3);
+  color: var(--red);
+  padding: 10px 16px;
+  border-radius: var(--radius);
+  margin-bottom: 20px;
+  font-size: 14px;
+}
+
+.loading { color: var(--text-muted); font-size: 14px; padding: 40px 0; text-align: center; }

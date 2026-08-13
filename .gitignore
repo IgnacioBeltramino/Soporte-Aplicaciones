@@ -1,0 +1,40 @@
+﻿# Credenciales — NUNCA subir
+.env
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.venv/
+venv/
+*.egg-info/
+
+# Node
+node_modules/
+dist/
+dist-ssr/
+frontend/.vite/
+*.local
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+
+# OS
+Thumbs.db
+.DS_Store
+
+# IDEs
+.vscode/*
+!.vscode/extensions.json
+.idea/
+*.suo
+*.sw?
+
+# Script de inicio local
+Iniciar_dashboard.ps1
+
+# Claude Code
+.claude/
